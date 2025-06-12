@@ -9,10 +9,9 @@ whisper_node: Subscribes to /mic_audio, decodes and transcribes the audio using 
 To run this standalone run the following:
  - build docker image: `./build.bash`
  - run docker container: `./run.bash`
- - To debug/configure the mic: `./join.bash`
  
 ### Configure input device 
-First run `./join.bash` to enter the container
+First run `./join.bash` to enter the container.
 Next, find the index of your input device by running the following:
  `python3 -c "import sounddevice as sd; print(sd.query_devices())"`
 To find the parameters of your input device run the following(Replace <device_index>):
