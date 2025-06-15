@@ -1,9 +1,9 @@
 # Whisper Overview
 This module does speech-to-text inference with the open-ai [whisper](https://github.com/openai/whisper).
 
-mic_node: Records audio in chunks from a specified input device using sounddevice and publishes it as std_msgs/Int16MultiArray on the /mic_audio topic.
+mic_node: Listens to /jackal_teleop/trigger topic. The message on the trigger topic is how many seconds the mic should wait before recording audio. After waiting for the speaker message to play, audio is recorded from a specified input device using sounddevice and published as a std_msgs/Int16MultiArray on the /mic_audio topic.
 
-whisper_node: Subscribes to /mic_audio, decodes and transcribes the audio using Whisper, and publishes the resulting text as a single accumulated string on the /transcribed_text topic.
+whisper_node: Subscribes to /mic_audio, decodes and transcribes the audio using Whisper, and publishes the resulting text as a single accumulated string on the /whisperer/text topic.
 
 ## Running Standalone 
 To run this standalone run the following:
@@ -20,10 +20,10 @@ To run this standalone run the following:
 
 ### View transcribed text
 - First run ./join.bash to enter the container
-- To view the full transcription as it updates run the following:
+- To view the full transcription as it updates, run the following:
 `rosrun mic_to_whisper transcription_viewer_node.py`
 
 ## Notes
 - Make sure the mic you are using is not set as the computers active input or output device. This gave me problems. 
-
+- To test trigerr run `rostopic pub /jackal_teleop/trigger std_msgs/UInt8 "data: 4"`
 - Important to resample audio back to 16 kHz for whisper to work well.
