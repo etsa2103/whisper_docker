@@ -1,5 +1,5 @@
 # Whisper Overview
-This module does speech-to-text inference with the open-ai [whisper](https://github.com/openai/whisper).
+This module does speech-to-text inference with the open-ai [whisper](https://github.com/openai/whisper). The structure is based on Jason hughes' whisper code (https://github.com/jhughes50/dtc-jackal/tree/1ab620210488aa55472882c8f567aa50f3538780/whisper) 
 
 mic_node: Listens to /jackal_teleop/trigger topic. The message on the trigger topic is how many seconds the mic should wait before recording audio. After waiting for the speaker message to play, audio is recorded from a specified input device using sounddevice and published as a std_msgs/Int16MultiArray on the /mic_audio topic.
 
