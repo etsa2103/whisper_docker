@@ -33,7 +33,7 @@ RUN apt-get update \
  unzip
 
 # Add a user
-ARG user_id
+ARG user_id=1000
 ARG username=dtc
 ENV USER=${username}
 ENV USER_HOME=/home/${USER}
@@ -72,11 +72,11 @@ RUN sudo apt-get install -y python3-pip
 RUN mkdir -p ${USER_HOME}/ws/src/mic_to_whisper
 
 RUN sudo adduser ${USER} dialout
-RUN sudo adduser ${USER} tty 
+RUN sudo adduser ${USER} tty
 RUN sudo adduser ${USER} plugdev
 
 # Install whisper dependencies
-RUN pip install git+https://github.com/openai/whisper.git 
+RUN pip install git+https://github.com/openai/whisper.git
 RUN sudo apt update && sudo apt install ffmpeg
 RUN pip install numba --upgrade
 
@@ -86,7 +86,7 @@ RUN sudo apt-get update \
  && sudo apt-get install -y ros-noetic-audio-common \
  && sudo apt-get install -y tcpdump \
  && sudo apt-get install -y gstreamer1.0-plugins-base-app \
- && sudo apt-get install -y libasound-dev portaudio19-dev libportaudio2 libportaudiocpp0 
+ && sudo apt-get install -y libasound-dev portaudio19-dev libportaudio2 libportaudiocpp0
 
 # Install Python packages that need system audio libs
 RUN pip install sounddevice scipy
@@ -100,19 +100,25 @@ RUN sudo chown ${USER}:${USER} ${USER_HOME}/.bashrc \
  && echo 'export PS1="\[$(tput setaf 2; tput bold)\]\u\[$(tput setaf 7)\]@\[$(tput setaf 3)\]\h\[$(tput setaf 7)\]:\[$(tput setaf 4)\]\W\[$(tput setaf 7)\]$ \[$(tput sgr0)\]"' >> ~/.bashrc
 
 # copy the ROS workspace
-COPY ./mic_to_whisper ${USER_HOME}/ws/src/mic_to_whisper/
-COPY ./entrypoint.bash ${USER_HOME}/entrypoint.bash
+WORKDIR /home/$USER
+COPY ./mic_to_whisper ./ws/src/mic_to_whisper/
+COPY ./entrypoint.bash entrypoint.bash
+
+RUN sudo chown -R $USER:$USER /home/$USER/ws/src/mic_to_whisper
 
 # Build the ROS workspace 
 RUN sudo adduser ${USER} audio
 RUN sudo adduser ${USER} pulse-access
 ENV RUN=true
 
-RUN bash -c '\
+RUN /bin/bash -c '\
   source /opt/ros/noetic/setup.bash && \
   cd /home/dtc/ws && \
   catkin config --extend /opt/ros/noetic && \
   catkin build --no-status -DCMAKE_BUILD_TYPE=Release'
-
+#RUN chown ${USER}:${USER} /home/dtc/entrypoint.bash \
+# && chmod +x /home/dtc/entrypoint.bash
 # Set the entrypoint
-ENTRYPOINT ["/bin/bash", "/home/dtc/entrypoint.bash"]
+#RUN echo "BEFORE ENTRY POINT"
+#ENTRYPOINT ["/bin/bash", "/home/dtc/entrypoint.bash"]
+

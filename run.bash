@@ -24,6 +24,6 @@ docker run --rm -it --gpus all \
     -e QT_X11_NO_MITSHM=1 \
     -e XAUTHORITY=$XAUTH \
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
-    --name dtc-jackal-phobos-whisper \
-    dtc-jackal-phobos:whisper \
+    --name dtc-jackal-deimos-whisper-test \
+    dtc-jackal-deimos:whisper-test \
     bash
